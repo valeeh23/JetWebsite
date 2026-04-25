@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aircraft Fleet – Toyo Aviation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* ── Per-plane sliding gallery ────────────────── */
+        .ac-gallery-wrap {
+            position: relative;
+            overflow: hidden;
+            flex: 1;
+            min-width: 300px;
+            /* Gallery panel transitions its flex sizing */
+            transition: flex 0.75s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* The sliding strip */
+        .ac-gallery-track {
+            display: flex;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            will-change: transform;
+        }
+
+        /* Each gallery slide */
+        .ac-gallery-slide {
+            flex: 0 0 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .ac-gallery-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+        }
+
+        /* ── Right arrow ── */
+        .ac-gallery-arrow {
+            position: absolute;
+            right: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 48px;
+            height: 48px;
+            background: rgba(255,255,255,0.88);
+            backdrop-filter: blur(6px);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 20;
+            transition: background 0.2s, transform 0.2s, opacity 0.3s;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.14);
+        }
+        .ac-gallery-arrow:hover {
+            background: #fff;
+            transform: translateY(-50%) scale(1.08);
+        }
+        .ac-gallery-arrow .material-symbols-outlined {
+            font-size: 22px;
+            color: #111;
+            user-select: none;
+        }
+
+        /* Left arrow */
+        .ac-gallery-arrow-left {
+            left: 1.2rem;
+            right: auto;
+        }
+
+        /* ── Dot indicators — professional filled circles ── */
+        .ac-gallery-dots {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 7px;
+            z-index: 20;
+            align-items: center;
+        }
+        .ac-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.45);
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+            flex-shrink: 0;
+        }
+        .ac-dot.active {
+            background: #ffffff;
+            transform: scale(1.35);
+        }
+        .ac-dot:hover:not(.active) {
+            background: rgba(255,255,255,0.7);
+        }
+
+        /* ═══════════════════════════════════════════════════
+           GALLERY EXPAND MODE — triggered when index > 0
+           The gallery panel pulls left, the plane panel
+           shrinks + gets blurred + dark overlay.
+           ═══════════════════════════════════════════════════ */
+
+        /* The left (plane) panel when gallery is open */
+        .ac-section.gallery-active .ac-plane-col {
+            min-width: 20% !important;
+            width: 20% !important;
+            flex-shrink: 1;
+            filter: blur(5px) brightness(0.6);
+            cursor: pointer;   /* signals it's clickable to close */
+        }
+
+        /* Dark tint overlay on plane panel (via pseudo-element) */
+        .ac-plane-col::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(5, 5, 10, 0);
+            z-index: 15;
+            transition: background 0.65s ease;
+            pointer-events: none;
+        }
+        .ac-section.gallery-active .ac-plane-col::after {
+            background: rgba(5, 5, 10, 0.45);
+            pointer-events: auto;  /* catch the click to close */
+            cursor: pointer;
+        }
+
+        /* ── Gallery close (X) button ── */
+        .ac-gallery-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 30;
+            /* hidden by default, only shows when gallery-active */
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.8) rotate(-90deg);
+            transition: opacity 0.4s ease, transform 0.4s ease, background 0.2s;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+        }
+        .ac-gallery-close:hover {
+            background: #fff;
+            transform: scale(1.08) rotate(0deg);
+        }
+        .ac-section.gallery-active .ac-gallery-close {
+            opacity: 1;
+            pointer-events: auto;
+            transform: scale(1) rotate(0deg);
+        }
+        .ac-gallery-close .material-symbols-outlined {
+            font-size: 18px;
+            color: #111;
+            user-select: none;
+        }
+
+        /* Challenger 300 name: reduce font size */
+        .ac-plane-name.name-long {
+            font-size: clamp(2rem, 5vw, 6rem);
+        }
+
+        /* Gallery wraps fill the hero height */
+        .ac-hero {
+            min-height: 480px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="top-nav" id="main-nav">
+        <a href="index.html" class="nav-brand">
+            <img src="toyologo.png" alt="Toyo Aviation logo">
+            <span class="nav-brand-text">Toyo Aviation</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="services.html">Services</a></li>
+            <li><a href="aircrafts.html" class="active">Aircrafts</a></li>
+            <li><a href="#">Careers</a></li>
+        </ul>
+        <a href="mailto:office@toyoaviation.ro" class="cta-pill-small">Contact Us ↗</a>
+    </nav>
+    <script>document.getElementById('main-nav').classList.add('nav-visible');</script>
+
+    <!-- Page Header -->
+    <div class="ac-page-header">
+        <p class="ac-eyebrow-plain">DISCOVER OUR COLLECTION</p>
+        <h1 class="ac-page-title">Aircraft Fleet.</h1>
+    </div>
+
+    <!-- ========================================
+         AIRCRAFT 1: CESSNA CJ4 YR-TRK
+         CJ4: 16.26m overall — 56% of largest
+         ======================================== -->
+    <section class="ac-section" style="--plane-w: 680px;">
+        <div class="ac-hero">
+
+            <!-- LEFT: Plane + huge name -->
+            <div class="ac-plane-col">
+                <img src="../vheer_bg_remover/Cessna CJ4.png" alt="Cessna CJ4" class="ac-plane-img">
+                <h2 class="ac-plane-name">CESSNA CJ4</h2>
+            </div>
+
+            <!-- RIGHT: Sliding gallery — interior first, exterior last -->
+            <div class="ac-gallery-wrap" data-gallery="cj4">
+                <div class="ac-gallery-track">
+                    <!-- Interior photos -->
+                    <div class="ac-gallery-slide"><img src="../cessna-cj4-yr-trk/TRK6-1024x681-1.jpeg" alt="CJ4 Interior 1"></div>
+                    <div class="ac-gallery-slide"><img src="../cessna-cj4-yr-trk/TRK7-1024x681-1.jpeg" alt="CJ4 Interior 2"></div>
+                    <div class="ac-gallery-slide"><img src="../cessna-cj4-yr-trk/186511799_854903268430821_1990459032349233003_n.jpeg" alt="CJ4 Interior 3"></div>
+                    <div class="ac-gallery-slide"><img src="../cessna-cj4-yr-trk/PHOTO-2021-06-02-19-45-00-1.jpeg" alt="CJ4 Interior 4"></div>
+                    <div class="ac-gallery-slide"><img src="../cessna-cj4-yr-trk/WhatsApp-Image-2023-12-23-at-18.52.28-1.jpeg" alt="CJ4 Cabin"></div>
+                    <!-- Exterior last -->
+                    <div class="ac-gallery-slide"><img src="../cessna-cj4-yr-trk/23252135_n-1.jpeg" alt="CJ4 Exterior"></div>
+                </div>
+
+                <!-- X close button -->
+                <button class="ac-gallery-close" onclick="galleryClose(this)" aria-label="Close gallery">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+                <!-- Left arrow (prev) -->
+                <button class="ac-gallery-arrow ac-gallery-arrow-left" onclick="galleryPrev(this)" aria-label="Previous photo">
+                    <span class="material-symbols-outlined">chevron_left</span>
+                </button>
+                <!-- Right arrow (next) -->
+                <button class="ac-gallery-arrow" onclick="galleryNext(this)" aria-label="Next photo">
+                    <span class="material-symbols-outlined">chevron_right</span>
+                </button>
+
+                <div class="ac-gallery-dots"></div>
+            </div>
+
+        </div>
+
+        <!-- Specs + Floorplan -->
+        <div class="ac-details">
+            <div class="ac-specs">
+                <p class="ac-specs-eyebrow">Specifications — YR-TRK</p>
+                <div class="ac-stat-icons">
+                    <div class="ac-stat-item">
+                        <span class="ac-icon">person</span>
+                        <span>7 Passengers</span>
+                    </div>
+                    <div class="ac-stat-item">
+                        <span class="ac-icon">luggage</span>
+                        <span>Up to 7 suitcases <em style="opacity:0.6; font-size:0.7em;">*depending on size</em></span>
+                    </div>
+                    <div class="ac-stat-item">
+                        <span class="ac-icon">navigation</span>
+                        <span>1825 Nm* <em style="opacity:0.6; font-size:0.7em;">*depending on pax, load and weather</em></span>
+                    </div>
+                </div>
+                <table class="ac-spec-table">
+                    <tr><td colspan="2" class="ac-spec-cat">Cabin:</td></tr>
+                    <tr><td class="label-col">Crew</td><td class="value-col">2 pilots</td></tr>
+                    <tr><td class="label-col">Lavatory</td><td class="value-col">Yes</td></tr>
+                    <tr><td class="label-col">Pets allowed</td><td class="value-col">Upon request</td></tr>
+
+                    <tr><td colspan="2" class="ac-spec-cat">Cabin Dimensions:</td></tr>
+                    <tr><td class="label-col">Max length</td><td class="value-col">5.3 m – 17.4 ft</td></tr>
+                    <tr><td class="label-col">Max width</td><td class="value-col">1.47 m – 4.10 ft</td></tr>
+                    <tr><td class="label-col">Max height</td><td class="value-col">1.4 m – 4.9 ft</td></tr>
+
+                    <tr><td colspan="2" class="ac-spec-cat">Performances:</td></tr>
+                    <tr><td class="label-col">Range Max. Speed</td><td class="value-col">435 kts</td></tr>
+                    <tr><td class="label-col">Max range</td><td class="value-col">1825 nm</td></tr>
+                </table>
+            </div>
+
+            <div class="ac-floorplan">
+                <p class="ac-floorplan-label">Floor Plan</p>
+                <img src="../planes/Cessna-Citation-CJ4_Floorplan-768x251.png" alt="Cessna CJ4 Floorplan">
+            </div>
+        </div>
+    </section>
+
+    <hr class="ac-divider">
+
+    <!-- ========================================
+         AIRCRAFT 2: EMBRAER PHENOM 300 YR-TRQ
+         Phenom 300: 17.14m overall — 59% of largest
+         ======================================== -->
+    <section class="ac-section" style="--plane-w: 720px;">
+        <div class="ac-hero">
+            <div class="ac-plane-col">
+                <img src="../vheer_bg_remover/Embraer Phenom 300.png" alt="Embraer Phenom 300" class="ac-plane-img">
+                <h2 class="ac-plane-name">PHENOM 300</h2>
+            </div>
+            <div class="ac-gallery-wrap" data-gallery="phenom300">
+                <div class="ac-gallery-track">
+                    <!-- Interior photos first -->
+                    <div class="ac-gallery-slide"><img src="../embraer-phenom-300/3M5A5124-scaled (1).jpeg" alt="Phenom 300 Interior 1"></div>
+                    <div class="ac-gallery-slide"><img src="../embraer-phenom-300/3M5A5144-scaled (1).jpeg" alt="Phenom 300 Interior 2"></div>
+                    <div class="ac-gallery-slide"><img src="../embraer-phenom-300/AA4A6547-1-scaled (1).jpeg" alt="Phenom 300 Interior 3"></div>
+                    <div class="ac-gallery-slide"><img src="../embraer-phenom-300/AA4A8625-1-1-scaled (1).jpeg" alt="Phenom 300 Interior 4"></div>
+                    <div class="ac-gallery-slide"><img src="../embraer-phenom-300/AA4A8649-1-scaled (1).jpeg" alt="Phenom 300 Interior 5"></div>
+                    <div class="ac-gallery-slide"><img src="../embraer-phenom-300/DSC_5544-1-scaled (1).jpeg" alt="Phenom 300 Cockpit"></div>
+                    <div class="ac-gallery-slide"><img src="../embraer-phenom-300/PHOTO-2026-01-09-18-16-24 (1).jpeg" alt="Phenom 300 Cabin"></div>
+                    <div class="ac-gallery-slide"><img src="../embraer-phenom-300/PHOTO-2026-01-09-18-16-26-6 (1).jpeg" alt="Phenom 300 Cabin 2"></div>
+                    <!-- Exterior last -->
+                    <div class="ac-gallery-slide"><img src="../embraer-phenom-300/PHOTO-2026-01-09-18-16-27-2 (1).jpeg" alt="Phenom 300 Exterior"></div>
+                </div>
+                <button class="ac-gallery-close" onclick="galleryClose(this)" aria-label="Close gallery">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+                <button class="ac-gallery-arrow ac-gallery-arrow-left" onclick="galleryPrev(this)" aria-label="Previous photo">
+                    <span class="material-symbols-outlined">chevron_left</span>
+                </button>
+                <button class="ac-gallery-arrow" onclick="galleryNext(this)" aria-label="Next photo">
+                    <span class="material-symbols-outlined">chevron_right</span>
+                </button>
+                <div class="ac-gallery-dots"></div>
+            </div>
+        </div>
+        <div class="ac-details">
+            <div class="ac-specs">
+                <p class="ac-specs-eyebrow">Specifications — YR-TRQ</p>
+                <div class="ac-stat-icons">
+                    <div class="ac-stat-item">
+                        <span class="ac-icon">person</span>
+                        <span>8 Passengers</span>
+                    </div>
+                    <div class="ac-stat-item">
+                        <span class="ac-icon">luggage</span>
+                        <span>Up to 7 suitcases <em style="opacity:0.6; font-size:0.7em;">*depending on size</em></span>
+                    </div>
+                    <div class="ac-stat-item">
+                        <span class="ac-icon">navigation</span>
+                        <span>2270 Nm* <em style="opacity:0.6; font-size:0.7em;">*depending on pax, load and weather</em></span>
+                    </div>
+                </div>
+                <table class="ac-spec-table">
+                    <tr><td colspan="2" class="ac-spec-cat">Cabin:</td></tr>
+                    <tr><td class="label-col">Crew</td><td class="value-col">2 pilots, 1 flight attendant</td></tr>
+                    <tr><td class="label-col">Lavatory</td><td class="value-col">Yes</td></tr>
+                    <tr><td class="label-col">Pets allowed</td><td class="value-col">Upon request</td></tr>
+
+                    <tr><td colspan="2" class="ac-spec-cat">Cabin Dimensions:</td></tr>
+                    <tr><td class="label-col">Max length</td><td class="value-col">5.23 m – 17.2 ft</td></tr>
+                    <tr><td class="label-col">Max width</td><td class="value-col">1.55 m – 5.1 ft</td></tr>
+                    <tr><td class="label-col">Max height</td><td class="value-col">1.5 m – 4.11 ft</td></tr>
+
+                    <tr><td colspan="2" class="ac-spec-cat">Performances:</td></tr>
+                    <tr><td class="label-col">Range Max. Speed</td><td class="value-col">470 kts</td></tr>
+                    <tr><td class="label-col">Max range</td><td class="value-col">2010 nm</td></tr>
+                </table>
+            </div>
+            <div class="ac-floorplan">
+                <p class="ac-floorplan-label">Floor Plan</p>
+                <img src="../planes/Embraer-Phenom-300_Floor-Plan.png" alt="Phenom 300 Floorplan">
+            </div>
+        </div>
+    </section>
+
+    <hr class="ac-divider">
+
+    <!-- ========================================
+         AIRCRAFT 3: CESSNA M2 YR-TAR
+         M2: 14.26m overall — 49% of largest (smallest)
+         ======================================== -->
+    <section class="ac-section" style="--plane-w: 590px;">
+        <div class="ac-hero">
+            <div class="ac-plane-col">
+                <img src="../vheer_bg_remover/Cessna M2.png" alt="Cessna M2" class="ac-plane-img">
+                <h2 class="ac-plane-name">CESSNA M2</h2>
+            </div>
+            <div class="ac-gallery-wrap" data-gallery="m2">
+                <div class="ac-gallery-track">
+                    <!-- Interior photos first -->
+                    <div class="ac-gallery-slide"><img src="../cessna-m2-yr-tar/AA4A3764-1-scaled.jpeg" alt="M2 Interior 1"></div>
+                    <div class="ac-gallery-slide"><img src="../cessna-m2-yr-tar/AA4A6998-1.jpeg" alt="M2 Interior 2"></div>
+                    <div class="ac-gallery-slide"><img src="../cessna-m2-yr-tar/264A9800-scaled.jpeg" alt="M2 Interior 3"></div>
+                    <div class="ac-gallery-slide"><img src="../cessna-m2-yr-tar/PHOTO-2021-06-06-20-54-48.jpeg" alt="M2 Interior 4"></div>
+                    <div class="ac-gallery-slide"><img src="../cessna-m2-yr-tar/803041_n-1-e1703856534454.jpeg" alt="M2 Cabin"></div>
+                    <!-- Exterior last -->
+                    <div class="ac-gallery-slide"><img src="../cessna-m2-yr-tar/M2-scaled.jpeg" alt="M2 Exterior"></div>
+                </div>
+                <button class="ac-gallery-close" onclick="galleryClose(this)" aria-label="Close gallery">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+                <button class="ac-gallery-arrow ac-gallery-arrow-left" onclick="galleryPrev(this)" aria-label="Previous photo">
+                    <span class="material-symbols-outlined">chevron_left</span>
+                </button>
+                <button class="ac-gallery-arrow" onclick="galleryNext(this)" aria-label="Next photo">
+                    <span class="material-symbols-outlined">chevron_right</span>
+                </button>
+                <div class="ac-gallery-dots"></div>
+            </div>
+        </div>
+        <div class="ac-details">
+            <div class="ac-specs">
+                <p class="ac-specs-eyebrow">Specifications — YR-TAR</p>
+                <div class="ac-stat-icons">
+                    <div class="ac-stat-item">
+                        <span class="ac-icon">person</span>
+                        <span>5 Passengers</span>
+                    </div>
+                    <div class="ac-stat-item">
+                        <span class="ac-icon">luggage</span>
+                        <span>Up to 5 suitcases</span>
+                    </div>
+                    <div class="ac-stat-item">
+                        <span class="ac-icon">navigation</span>
+                        <span>1550 Nm* range</span>
+                    </div>
+                </div>
+                <table class="ac-spec-table">
+                    <tr><td colspan="2" class="ac-spec-cat">Cabin:</td></tr>
+                    <tr><td class="label-col">Crew</td><td class="value-col">2 pilots</td></tr>
+                    <tr><td class="label-col">Lavatory</td><td class="value-col">Yes</td></tr>
+
+                    <tr><td colspan="2" class="ac-spec-cat">Cabin Dimensions:</td></tr>
+                    <tr><td class="label-col">Max length</td><td class="value-col">3.84 m – 12.6 ft</td></tr>
+                    <tr><td class="label-col">Max width</td><td class="value-col">1.44 m – 4.7 ft</td></tr>
+                    <tr><td class="label-col">Max height</td><td class="value-col">1.45 m – 4.8 ft</td></tr>
+
+                    <tr><td colspan="2" class="ac-spec-cat">Performances:</td></tr>
+                    <tr><td class="label-col">Range Max. Speed</td><td class="value-col">400 kts</td></tr>
+                    <tr><td class="label-col">Max range</td><td class="value-col">1550 nm</td></tr>
+                </table>
+            </div>
+            <div class="ac-floorplan">
+                <p class="ac-floorplan-label">Floor Plan</p>
+                <img src="../planes/Cessna-Citation-M2_Floorplan-768x371.png" alt="Cessna M2 Floorplan">
+            </div>
+        </div>
+    </section>
+
+    <hr class="ac-divider">
+
+    <!-- ========================================
+         AIRCRAFT 4: CHALLENGER 300 YR-TRC
+         Challenger 300: 20.92m overall — 72% of largest
+         ======================================== -->
+    <section class="ac-section" style="--plane-w: 870px;">
+        <div class="ac-hero">
+            <div class="ac-plane-col">
+                <img src="../vheer_bg_remover/CHALLENGER 300.png" alt="Challenger 300" class="ac-plane-img">
+                <!-- name-long class makes it smaller to breathe before gallery -->
+                <h2 class="ac-plane-name name-long">CHALLENGER 300</h2>
+            </div>
+            <div class="ac-gallery-wrap" data-gallery="challenger300">
+                <div class="ac-gallery-track">
+                    <!-- Interior photos first -->
+                    <div class="ac-gallery-slide"><img src="../challenger-300-yr-trc/1799407-large-scaled.jpeg" alt="Challenger 300 Interior 1"></div>
+                    <div class="ac-gallery-slide"><img src="../challenger-300-yr-trc/1689004-large-scaled.jpeg" alt="Challenger 300 Interior 2"></div>
+                    <div class="ac-gallery-slide"><img src="../challenger-300-yr-trc/81705007_2778657392216712_1250027687217463296_n.jpeg" alt="Challenger 300 Cabin"></div>
+                    <div class="ac-gallery-slide"><img src="../challenger-300-yr-trc/13818_1532957397.jpeg" alt="Challenger 300 Cockpit"></div>
+                    <!-- Exterior last -->
+                    <div class="ac-gallery-slide"><img src="../challenger-300-yr-trc/N396BC-Challenger-300-03.jpeg" alt="Challenger 300 Exterior"></div>
+                </div>
+                <button class="ac-gallery-close" onclick="galleryClose(this)" aria-label="Close gallery">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+                <button class="ac-gallery-arrow ac-gallery-arrow-left" onclick="galleryPrev(this)" aria-label="Previous photo">
+                    <span class="material-symbols-outlined">chevron_left</span>
+                </button>
+                <button class="ac-gallery-arrow" onclick="galleryNext(this)" aria-label="Next photo">
+                    <span class="material-symbols-outlined">chevron_right</span>
+                </button>
+                <div class="ac-gallery-dots"></div>
+            </div>
+        </div>
+        <div class="ac-details">
+            <div class="ac-specs">
+                <p class="ac-specs-eyebrow">Specifications — YR-TRC</p>
+                <div class="ac-stat-icons">
+                    <div class="ac-stat-item">
+                        <span class="ac-icon">person</span>
+                        <span>9 Passengers</span>
+                    </div>
+                    <div class="ac-stat-item">
+                        <span class="ac-icon">luggage</span>
+                        <span>Up to 10 suitcases <em style="opacity:0.6; font-size:0.7em;">*depending on size</em></span>
+                    </div>
+                    <div class="ac-stat-item">
+                        <span class="ac-icon">navigation</span>
+                        <span>3065 Nm* <em style="opacity:0.6; font-size:0.7em;">*depending on pax, load and weather</em></span>
+                    </div>
+                </div>
+                <table class="ac-spec-table">
+                    <tr><td colspan="2" class="ac-spec-cat">Cabin:</td></tr>
+                    <tr><td class="label-col">Crew</td><td class="value-col">2 pilots, 1 flight attendant</td></tr>
+                    <tr><td class="label-col">Lavatory</td><td class="value-col">Yes</td></tr>
+                    <tr><td class="label-col">Pets allowed</td><td class="value-col">Upon request</td></tr>
+
+                    <tr><td colspan="2" class="ac-spec-cat">Cabin Dimensions:</td></tr>
+                    <tr><td class="label-col">Max length</td><td class="value-col">8.72 m – 28.6 ft</td></tr>
+                    <tr><td class="label-col">Max width</td><td class="value-col">2.18 m – 7.2 ft</td></tr>
+                    <tr><td class="label-col">Max height</td><td class="value-col">1.85 m – 6.1 ft</td></tr>
+
+                    <tr><td colspan="2" class="ac-spec-cat">Performances:</td></tr>
+                    <tr><td class="label-col">Range Max. Speed</td><td class="value-col">470 kts</td></tr>
+                    <tr><td class="label-col">Max range</td><td class="value-col">3065 nm</td></tr>
+                </table>
+            </div>
+            <div class="ac-floorplan">
+                <p class="ac-floorplan-label">Floor Plan</p>
+                <img src="../planes/NEW_Bombardier-Challenger-300-floorplan-DAY-_-768x237.png" alt="Challenger 300 Floorplan">
+            </div>
+        </div>
+    </section>
+
+    <hr class="ac-divider">
+
+    <!-- ========================================
+         AIRCRAFT 5: EMBRAER LEGACY 600 YR-TRO
+         Legacy 600: 26.33m overall — 91% of largest
+         ======================================== -->
+    <section class="ac-section" style="--plane-w: 1100px;">
+        <div class="ac-hero">
+            <div class="ac-plane-col">
+                <img src="../vheer_bg_remover/Embraer Legacy 600.png" alt="Embraer Legacy 600" class="ac-plane-img">
+                <h2 class="ac-plane-name">LEGACY 600</h2>
+            </div>
+            <div class="ac-gallery-wrap" data-gallery="legacy600">
+                <div class="ac-gallery-track">
+                    <!-- Interior photos first -->
+                    <div class="ac-gallery-slide"><img src="../embraer-legacy-600-yr-tro/SL7_0158-Bearbeitet_toyo-1024x683-1.jpeg" alt="Legacy 600 Interior 1"></div>
+                    <div class="ac-gallery-slide"><img src="../embraer-legacy-600-yr-tro/SL7_0227-Bearbeitet-1024x683-1.jpeg" alt="Legacy 600 Interior 2"></div>
+                    <div class="ac-gallery-slide"><img src="../embraer-legacy-600-yr-tro/264A9785-scaled.jpeg" alt="Legacy 600 Cabin"></div>
+                    <div class="ac-gallery-slide"><img src="../embraer-legacy-600-yr-tro/242081275_228003872611471_3743697321170245187_n.jpeg" alt="Legacy 600 Lounge"></div>
+                    <!-- Exteriors last -->
+                    <div class="ac-gallery-slide"><img src="../embraer-legacy-600-yr-tro/1811495-large.jpeg" alt="Legacy 600 Exterior 1"></div>
+                    <div class="ac-gallery-slide"><img src="../embraer-legacy-600-yr-tro/1266704_1690010546.jpeg" alt="Legacy 600 Exterior 2"></div>
+                    <div class="ac-gallery-slide"><img src="../embraer-legacy-600-yr-tro/90735_1670360631-1.jpeg" alt="Legacy 600 Exterior 3"></div>
+                </div>
+                <button class="ac-gallery-close" onclick="galleryClose(this)" aria-label="Close gallery">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+                <button class="ac-gallery-arrow ac-gallery-arrow-left" onclick="galleryPrev(this)" aria-label="Previous photo">
+                    <span class="material-symbols-outlined">chevron_left</span>
+                </button>
+                <button class="ac-gallery-arrow" onclick="galleryNext(this)" aria-label="Next photo">
+                    <span class="material-symbols-outlined">chevron_right</span>
+                </button>
+                <div class="ac-gallery-dots"></div>
+            </div>
+        </div>
+        <div class="ac-details">
+            <div class="ac-specs">
+                <p class="ac-specs-eyebrow">Specifications — YR-TRO</p>
+                <div class="ac-stat-icons">
+                    <div class="ac-stat-item">
+                        <span class="ac-icon">person</span>
+                        <span>13 Passengers</span>
+                    </div>
+                    <div class="ac-stat-item">
+                        <span class="ac-icon">luggage</span>
+                        <span>Up to 20 suitcases <em style="opacity:0.6; font-size:0.7em;">*depending on size</em></span>
+                    </div>
+                    <div class="ac-stat-item">
+                        <span class="ac-icon">navigation</span>
+                        <span>3900 Nm* <em style="opacity:0.6; font-size:0.7em;">*depending on pax, load and weather</em></span>
+                    </div>
+                </div>
+                <table class="ac-spec-table">
+                    <tr><td colspan="2" class="ac-spec-cat">Cabin:</td></tr>
+                    <tr><td class="label-col">Crew</td><td class="value-col">2 pilots, 1 flight attendant</td></tr>
+                    <tr><td class="label-col">Lavatory</td><td class="value-col">AFT</td></tr>
+                    <tr><td class="label-col">Pets allowed</td><td class="value-col">Upon request</td></tr>
+
+                    <tr><td colspan="2" class="ac-spec-cat">Cabin Dimensions:</td></tr>
+                    <tr><td class="label-col">Max length</td><td class="value-col">15.2 m – 49.8 ft</td></tr>
+                    <tr><td class="label-col">Max width</td><td class="value-col">2.08 m – 6.11 ft</td></tr>
+                    <tr><td class="label-col">Max height</td><td class="value-col">1.82 m – 6 ft</td></tr>
+
+                    <tr><td colspan="2" class="ac-spec-cat">Performances:</td></tr>
+                    <tr><td class="label-col">Range Max. Speed</td><td class="value-col">400 kts</td></tr>
+                    <tr><td class="label-col">Max range</td><td class="value-col">3900 nm</td></tr>
+                </table>
+            </div>
+            <div class="ac-floorplan">
+                <p class="ac-floorplan-label">Floor Plan</p>
+                <img src="../planes/EMBRAER-LEGACY-600_LX-JAG_FLOORPLAN_DAY_0.png" alt="Legacy 600 Floorplan">
+            </div>
+        </div>
+    </section>
+
+    <hr class="ac-divider">
+
+    <!-- ========================================
+         AIRCRAFT 6: EMBRAER LEGACY 650 YR-TRE
+         Legacy 650: 26.33m overall — largest in fleet = 100%
+         ======================================== -->
+    <section class="ac-section" style="--plane-w: 1100px;">
+        <div class="ac-hero">
+            <div class="ac-plane-col">
+                <img src="../vheer_bg_remover/Embraer Legacy 650.png" alt="Embraer Legacy 650" class="ac-plane-img">
+                <h2 class="ac-plane-name">LEGACY 650</h2>
+            </div>
+            <div class="ac-gallery-wrap" data-gallery="legacy650">
+                <div class="ac-gallery-track">
+                    <!-- Interior photos first -->
+                    <div class="ac-gallery-slide"><img src="../embraer-legacy-650-yr-tre/SL8_6100-Bearbeitet.jpeg" alt="Legacy 650 Interior 1"></div>
+                    <div class="ac-gallery-slide"><img src="../embraer-legacy-650-yr-tre/SL8_6109-Bearbeitet.jpeg" alt="Legacy 650 Interior 2"></div>
+                    <div class="ac-gallery-slide"><img src="../embraer-legacy-650-yr-tre/SL8_6133-Bearbeitet.jpeg" alt="Legacy 650 Interior 3"></div>
+                    <div class="ac-gallery-slide"><img src="../embraer-legacy-650-yr-tre/SL8_6142-Bearbeitet.jpeg" alt="Legacy 650 Interior 4"></div>
+                    <div class="ac-gallery-slide"><img src="../embraer-legacy-650-yr-tre/SL8_6154-Bearbeitet.jpeg" alt="Legacy 650 Interior 5"></div>
+                    <div class="ac-gallery-slide"><img src="../embraer-legacy-650-yr-tre/SL8_6193-Bearbeitet.jpeg" alt="Legacy 650 Lounge"></div>
+                    <div class="ac-gallery-slide"><img src="../embraer-legacy-650-yr-tre/SL8_6199-Bearbeitet.jpeg" alt="Legacy 650 Cabin"></div>
+                    <div class="ac-gallery-slide"><img src="../embraer-legacy-650-yr-tre/WhatsApp-Image-2023-12-21-at-21.57.47-e1704124446415.jpeg" alt="Legacy 650 Detail"></div>
+                    <!-- Exteriors last -->
+                    <div class="ac-gallery-slide"><img src="../embraer-legacy-650-yr-tre/DSC_0788-1-scaled.jpeg" alt="Legacy 650 Exterior 1"></div>
+                    <div class="ac-gallery-slide"><img src="../embraer-legacy-650-yr-tre/IMG_0167-2-scaled.jpeg" alt="Legacy 650 Exterior 2"></div>
+                </div>
+                <button class="ac-gallery-close" onclick="galleryClose(this)" aria-label="Close gallery">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+                <button class="ac-gallery-arrow ac-gallery-arrow-left" onclick="galleryPrev(this)" aria-label="Previous photo">
+                    <span class="material-symbols-outlined">chevron_left</span>
+                </button>
+                <button class="ac-gallery-arrow" onclick="galleryNext(this)" aria-label="Next photo">
+                    <span class="material-symbols-outlined">chevron_right</span>
+                </button>
+                <div class="ac-gallery-dots"></div>
+            </div>
+        </div>
+        <div class="ac-details">
+            <div class="ac-specs">
+                <p class="ac-specs-eyebrow">Specifications — YR-TRE</p>
+                <div class="ac-stat-icons">
+                    <div class="ac-stat-item">
+                        <span class="ac-icon">person</span>
+                        <span>14 Passengers</span>
+                    </div>
+                    <div class="ac-stat-item">
+                        <span class="ac-icon">luggage</span>
+                        <span>Up to 15 suitcases</span>
+                    </div>
+                    <div class="ac-stat-item">
+                        <span class="ac-icon">navigation</span>
+                        <span>3900 Nm* range</span>
+                    </div>
+                </div>
+                <table class="ac-spec-table">
+                    <tr><td colspan="2" class="ac-spec-cat">Cabin:</td></tr>
+                    <tr><td class="label-col">Crew</td><td class="value-col">2 pilots, 2 flight attendants</td></tr>
+                    <tr><td class="label-col">Lavatory</td><td class="value-col">Yes (2)</td></tr>
+                    <tr><td class="label-col">Shower</td><td class="value-col">Yes</td></tr>
+
+                    <tr><td colspan="2" class="ac-spec-cat">Cabin Dimensions:</td></tr>
+                    <tr><td class="label-col">Max length</td><td class="value-col">14.52 m – 47.6 ft</td></tr>
+                    <tr><td class="label-col">Max width</td><td class="value-col">2.08 m – 6.8 ft</td></tr>
+                    <tr><td class="label-col">Max height</td><td class="value-col">1.82 m – 5.97 ft</td></tr>
+
+                    <tr><td colspan="2" class="ac-spec-cat">Performances:</td></tr>
+                    <tr><td class="label-col">Range Max. Speed</td><td class="value-col">459 kts</td></tr>
+                    <tr><td class="label-col">Max range</td><td class="value-col">3900 nm</td></tr>
+                </table>
+            </div>
+            <div class="ac-floorplan">
+                <p class="ac-floorplan-label">Floor Plan</p>
+                <img src="../planes/Embraer-Legacy-650_LX-MIA_Floorplan_DAY-768x136.png" alt="Legacy 650 Floorplan">
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bottom-footer" style="margin-top: 4rem;">
+        <div class="footer-left">TOYO AVIATION PRIVATE JET CHARTER</div>
+        <div class="footer-center">
+            <a href="#">FACEBOOK</a>
+            <a href="#">INSTAGRAM</a>
+            <a href="#">LINKEDIN</a>
+        </div>
+        <div class="footer-right">271-273 Splaiul Unirii, Bucharest, Romania</div>
+    </footer>
+
+    <script>
+        /* ── Gallery core ───────────────────────────────── */
+        function initGalleries() {
+            document.querySelectorAll('.ac-gallery-wrap').forEach(wrap => {
+                const slides = wrap.querySelectorAll('.ac-gallery-slide');
+                const dotsEl = wrap.querySelector('.ac-gallery-dots');
+                const total  = slides.length;
+
+                for (let i = 0; i < total; i++) {
+                    const d = document.createElement('button');
+                    d.className = 'ac-dot' + (i === 0 ? ' active' : '');
+                    d.setAttribute('aria-label', `Photo ${i + 1} of ${total}`);
+                    d.addEventListener('click', () => goTo(wrap, i));
+                    dotsEl.appendChild(d);
+                }
+
+                wrap._index = 0;
+                updateArrows(wrap);
+            });
+
+            /* Wire blurred left panel clicks to closeGallery */
+            document.querySelectorAll('.ac-section').forEach(section => {
+                const planeCol = section.querySelector('.ac-plane-col');
+                const wrap     = section.querySelector('.ac-gallery-wrap');
+                if (!planeCol || !wrap) return;
+
+                /* The ::after overlay catches the click (pointer-events: auto when active)
+                   but we listen on the col itself since events bubble from ::after. */
+                planeCol.addEventListener('click', () => {
+                    if (section.classList.contains('gallery-active')) {
+                        closeGallery(wrap);
+                    }
+                });
+            });
+        }
+
+        function goTo(wrap, idx) {
+            const slides  = wrap.querySelectorAll('.ac-gallery-slide');
+            const track   = wrap.querySelector('.ac-gallery-track');
+            const dots    = wrap.querySelectorAll('.ac-dot');
+            const total   = slides.length;
+            const section = wrap.closest('.ac-section');
+
+            idx = Math.max(0, Math.min(idx, total - 1));
+            wrap._index = idx;
+
+            track.style.transform = `translateX(-${idx * 100}%)`;
+            dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+
+            /* Cinematic expand: open when past slide 0, close at slide 0 */
+            if (idx === 0) {
+                section.classList.remove('gallery-active');
+            } else {
+                section.classList.add('gallery-active');
+            }
+
+            updateArrows(wrap);
+        }
+
+        /*
+         * closeGallery() — collapses the section back to default split.
+         * Does NOT reset _index, so the current photo stays as the cover.
+         * Pressing › again from here will re-open the expansion.
+         */
+        function closeGallery(wrap) {
+            const section = wrap.closest('.ac-section');
+            section.classList.remove('gallery-active');
+            /* _index intentionally left as-is — current photo becomes cover */
+        }
+
+        function galleryClose(btn) {
+            closeGallery(btn.closest('.ac-gallery-wrap'));
+        }
+
+        function updateArrows(wrap) {
+            const total      = wrap.querySelectorAll('.ac-gallery-slide').length;
+            const idx        = wrap._index;
+            const leftArrow  = wrap.querySelector('.ac-gallery-arrow-left');
+            const rightArrow = wrap.querySelector('.ac-gallery-arrow:not(.ac-gallery-arrow-left)');
+
+            if (leftArrow) {
+                leftArrow.style.opacity       = idx === 0 ? '0.28' : '1';
+                leftArrow.style.pointerEvents = idx === 0 ? 'none' : 'auto';
+            }
+            if (rightArrow) {
+                rightArrow.style.opacity       = idx === total - 1 ? '0.28' : '1';
+                rightArrow.style.pointerEvents = idx === total - 1 ? 'none' : 'auto';
+            }
+        }
+
+        function galleryNext(btn) {
+            goTo(btn.closest('.ac-gallery-wrap'), btn.closest('.ac-gallery-wrap')._index + 1);
+        }
+
+        function galleryPrev(btn) {
+            goTo(btn.closest('.ac-gallery-wrap'), btn.closest('.ac-gallery-wrap')._index - 1);
+        }
+
+        /* — Escape key closes any open gallery — */
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.ac-section.gallery-active').forEach(section => {
+                    const wrap = section.querySelector('.ac-gallery-wrap');
+                    if (wrap) closeGallery(wrap);
+                });
+                return;
+            }
+            const focused = document.querySelector('.ac-gallery-wrap:hover');
+            if (!focused) return;
+            if (e.key === 'ArrowRight') galleryNext(focused.querySelector('.ac-gallery-arrow:not(.ac-gallery-arrow-left)'));
+            if (e.key === 'ArrowLeft')  galleryPrev(focused.querySelector('.ac-gallery-arrow-left'));
+        });
+
+        /* — Touch/swipe support — */
+        document.querySelectorAll('.ac-gallery-wrap').forEach(wrap => {
+            let startX = 0;
+            wrap.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+            wrap.addEventListener('touchend', e => {
+                const dx = e.changedTouches[0].clientX - startX;
+                if (Math.abs(dx) > 40) {
+                    dx < 0 ? goTo(wrap, wrap._index + 1) : goTo(wrap, wrap._index - 1);
+                }
+            }, { passive: true });
+
+            /* — Trackpad horizontal swipe: one gesture = one slide — */
+            let gestureActive = false;   // true while wheel events are firing
+            let gestureTimer  = null;    // resets after events stop
+            let slidFired     = false;   // did we already advance this gesture?
+
+            wrap.addEventListener('wheel', e => {
+                // Ignore mostly-vertical scrolls
+                if (Math.abs(e.deltaX) < Math.abs(e.deltaY) * 0.7) return;
+                e.preventDefault();
+
+                // Keep the gesture-end timer alive while events keep flowing
+                clearTimeout(gestureTimer);
+                gestureTimer = setTimeout(() => {
+                    gestureActive = false;
+                    slidFired     = false;
+                }, 350);
+
+                // Only fire once per gesture
+                if (gestureActive && slidFired) return;
+                gestureActive = true;
+                slidFired     = true;
+
+                e.deltaX > 0
+                    ? goTo(wrap, wrap._index + 1)
+                    : goTo(wrap, wrap._index - 1);
+            }, { passive: false });
+        });
+
+        document.addEventListener('DOMContentLoaded', initGalleries);
+    </script>
+
+</body>
+</html>

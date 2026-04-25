@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<body>
+<div style="position:relative; width:800px; height:400px; border:1px solid red">
+  <img src="emea-map.svg" style="position:absolute; top:0; left:0; width:100%; opacity:0.5;">
+  <div id="markers"></div>
+</div>
+<script>
+const routes = [
+    { start: { lat: 44.4268, lng: 26.1025, label: 'BUCHAREST' }, end: { lat: 51.5072, lng: -0.1276, label: 'LONDON' } },
+    { start: { lat: 44.4268, lng: 26.1025, label: 'BUCHAREST' }, end: { lat: 46.2044, lng: 6.1432, label: 'GENEVA' } },
+    { start: { lat: 44.4268, lng: 26.1025, label: 'BUCHAREST' }, end: { lat: 43.7102, lng: 7.262, label: 'NICE' } },
+    { start: { lat: 44.4268, lng: 26.1025, label: 'BUCHAREST' }, end: { lat: 48.2082, lng: 16.3738, label: 'VIENNA' } },
+    { start: { lat: 44.4268, lng: 26.1025, label: 'BUCHAREST' }, end: { lat: 41.0082, lng: 28.9784, label: 'ISTANBUL' } },
+    { start: { lat: 44.4268, lng: 26.1025, label: 'BUCHAREST' }, end: { lat: 25.2048, lng: 55.2708, label: 'DUBAI' } },
+    { start: { lat: 44.4268, lng: 26.1025, label: 'BUCHAREST' }, end: { lat: 24.7136, lng: 46.6753, label: 'RIYADH' } }
+];
+function projectPoint(lat, lng) {
+    return {
+        x: (lng + 180) * (800 / 360),
+        y: (90 - lat) * (400 / 180)
+    };
+}
+const mDiv = document.getElementById('markers');
+routes.forEach(r => {
+    [r.start, r.end].forEach(p => {
+        const coords = projectPoint(p.lat, p.lng);
+        mDiv.innerHTML += `<div style="position:absolute; left:${coords.x}px; top:${coords.y}px; width:4px; height:4px; background:red; border-radius:50%; margin:-2px 0 0 -2px;"></div>`;
+        mDiv.innerHTML += `<div style="position:absolute; left:${coords.x}px; top:${coords.y}px; color:black; font-size:10px; z-index:10;">${p.label}</div>`;
+    });
+});
+</script>
+</body>
+</html>
