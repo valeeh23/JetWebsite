@@ -168,12 +168,31 @@ function initScrollSequence() {
     flexDirection: 'column',
   });
 
+  /* --- create background video --- */
+  const video = document.createElement('video');
+  video.id = 'seq-video';
+  video.src = 'hero-video.mp4';
+  video.autoplay = true;
+  video.loop = true;
+  video.muted = true;
+  video.playsInline = true;
+  Object.assign(video.style, {
+    position:  'absolute',
+    inset:     '0',
+    zIndex:    '1', // Above canvas, below UI
+    width:     '100%',
+    height:    '100%',
+    objectFit: 'cover',
+    willChange: 'opacity'
+  });
+
   /* --- move existing hero + stats inside the overlay --- */
   heroSection.parentNode.insertBefore(outer, heroSection);
   uiOverlay.appendChild(heroSection);
   if (statsBar) uiOverlay.appendChild(statsBar);
 
   sticky.appendChild(canvas);
+  sticky.appendChild(video);
   sticky.appendChild(uiOverlay);
   outer.appendChild(sticky);
 
@@ -231,8 +250,21 @@ function initScrollSequence() {
     const outerRect   = outer.getBoundingClientRect();
     const scrollTop   = -outerRect.top;                       // px scrolled into sequence
     const scrollable  = outer.offsetHeight - window.innerHeight; // total scrollable px
-    const progress    = Math.max(0, Math.min(1, scrollTop / scrollable));
+    
+    // Video fade out logic
+    const FADE_END = 200; // pixels over which to fade out the video
+    if (scrollTop <= 0) {
+      video.style.opacity = 1;
+      if (video.paused) video.play().catch(() => {});
+    } else if (scrollTop <= FADE_END) {
+      video.style.opacity = 1 - (scrollTop / FADE_END);
+      if (video.paused) video.play().catch(() => {});
+    } else {
+      video.style.opacity = 0;
+      if (!video.paused) video.pause();
+    }
 
+    const progress    = Math.max(0, Math.min(1, scrollTop / scrollable));
     const frame = Math.min(FRAME_COUNT - 1, Math.round(progress * (FRAME_COUNT - 1)));
 
     if (frame !== currentFrame) {
