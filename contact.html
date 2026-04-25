@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact – Toyo Aviation</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&family=Montserrat:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap" rel="stylesheet">
+    <meta name="description" content="Get in touch with Toyo Aviation. Reach our sales, operations, CAMO, and financial teams directly.">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
 </head>
 <body>
 
-    <!-- Top Navigation -->
-    <nav class="top-nav nav-visible">
+    <!-- Navigation -->
+    <nav class="top-nav nav-visible" id="main-nav">
         <a href="index.html" class="nav-brand">
             <img src="toyologo.png" alt="Toyo Aviation logo">
             <span class="nav-brand-text">Toyo Aviation</span>
@@ -25,86 +25,148 @@
         <a href="contact.html" class="cta-pill-small">Contact Us ↗</a>
     </nav>
 
-    <!-- Faded Hero Background -->
-    <div class="pg-hero" style="background-image: url('hero-bg.jpg');">
-        <div class="pg-hero-overlay"></div>
-        <div class="pg-hero-content">
-            <h1 class="pg-hero-title">Contact</h1>
+    <!-- ── HERO ── -->
+    <section class="ct-hero">
+        <div class="ct-hero-bg">
+            <img src="hero-bg.jpg" alt="">
         </div>
-    </div>
-
-    <!-- Contact Content -->
-    <section class="contact-section">
-        <div class="contact-container">
-            <h2 class="serif-title" style="margin-bottom: 4rem; font-size: clamp(2.5rem, 4vw, 3.5rem);">GET IN TOUCH</h2>
-            
-            <div class="contact-grid">
-                <!-- Sales -->
-                <div class="contact-card">
-                    <h3 class="contact-dept">SALES:</h3>
-                    <a href="mailto:sales@toyoaviation.ro" class="contact-link">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                        SALES@TOYOAVIATION.RO
-                    </a>
-                    <a href="tel:+40730092201" class="contact-link">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                        +40 730 092 201
-                    </a>
-                </div>
-                
-                <!-- Aircraft Management -->
-                <div class="contact-card">
-                    <h3 class="contact-dept">AIRCRAFT MANAGEMENT:</h3>
-                    <a href="mailto:camo@toyoaviation.ro" class="contact-link">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                        CAMO@TOYOAVIATION.RO
-                    </a>
-                    <a href="tel:+40730092201" class="contact-link">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                        +40 730 092 201
-                    </a>
-                </div>
-                
-                <!-- Other Inquiries -->
-                <div class="contact-card">
-                    <h3 class="contact-dept">OTHER INQUIRIES:</h3>
-                    <a href="mailto:office@toyoaviation.ro" class="contact-link">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                        OFFICE@TOYOAVIATION.RO
-                    </a>
-                </div>
-                
-                <!-- Financial -->
-                <div class="contact-card">
-                    <h3 class="contact-dept">FINANCIAL:</h3>
-                    <a href="mailto:financial@toyoaviation.ro" class="contact-link">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                        FINANCIAL@TOYOAVIATION.RO
-                    </a>
-                </div>
+        <div class="ct-hero-content">
+            <p class="ct-hero-eyebrow">Toyo Aviation · Contact</p>
+            <h1 class="ct-hero-title">Let's make<br>your next flight<br><em>exceptional.</em></h1>
+        </div>
+        <div class="ct-hero-info">
+            <div class="ct-hero-stat">
+                <span class="ct-hero-stat-val">24/7</span>
+                <span class="ct-hero-stat-label">Availability</span>
             </div>
-
-            <div class="location-wrapper">
-                <h3 class="serif-title" style="margin-bottom: 2rem; font-size: clamp(2rem, 3vw, 2.5rem);">OUR LOCATION</h3>
-                <div class="map-embed">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1m2!1s0x40b1fe16df5f80db%3A0xcf958f000b0943!2sSplaiul%20Unirii%20271%2C%20Bucure%C8%99ti%20030138%2C%20Romania!5e0!3m2!1sen!2sro!4v1714041234567!5m2!1sen!2sro" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                </div>
+            <div class="ct-hero-divider"></div>
+            <div class="ct-hero-stat">
+                <span class="ct-hero-stat-val">6</span>
+                <span class="ct-hero-stat-label">Aircraft in Fleet</span>
+            </div>
+            <div class="ct-hero-divider"></div>
+            <div class="ct-hero-stat">
+                <span class="ct-hero-stat-val">2007</span>
+                <span class="ct-hero-stat-label">Est. Bucharest</span>
             </div>
         </div>
     </section>
 
-    <!-- Footer CTA -->
+    <!-- ── CONTACT DEPARTMENTS ── -->
+    <section class="ct-depts">
+        <div class="ct-depts-header">
+            <p class="eyebrow on-light" style="margin-bottom:1.2rem;">Direct Lines</p>
+            <h2 class="ct-depts-title">Reach the right<br><em>team, directly.</em></h2>
+        </div>
+        <div class="ct-depts-grid">
+
+            <div class="ct-dept-card">
+                <div class="ct-dept-top">
+                    <span class="ct-dept-num">01</span>
+                    <h3 class="ct-dept-name">Sales</h3>
+                </div>
+                <p class="ct-dept-desc">Charter bookings, fleet inquiries, and route planning. Our sales team is on-call around the clock.</p>
+                <div class="ct-dept-links">
+                    <a href="mailto:sales@toyoaviation.ro" class="ct-dept-link">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        sales@toyoaviation.ro
+                    </a>
+                    <a href="tel:+40730092201" class="ct-dept-link">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        +40 730 092 201
+                    </a>
+                </div>
+            </div>
+
+            <div class="ct-dept-card">
+                <div class="ct-dept-top">
+                    <span class="ct-dept-num">02</span>
+                    <h3 class="ct-dept-name">Aircraft Management</h3>
+                </div>
+                <p class="ct-dept-desc">CAMO operations, airworthiness management, and aircraft ownership solutions.</p>
+                <div class="ct-dept-links">
+                    <a href="mailto:camo@toyoaviation.ro" class="ct-dept-link">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        camo@toyoaviation.ro
+                    </a>
+                    <a href="tel:+40730092201" class="ct-dept-link">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        +40 730 092 201
+                    </a>
+                </div>
+            </div>
+
+            <div class="ct-dept-card">
+                <div class="ct-dept-top">
+                    <span class="ct-dept-num">03</span>
+                    <h3 class="ct-dept-name">General Inquiries</h3>
+                </div>
+                <p class="ct-dept-desc">For careers, press, or other general enquiries not covered by our specialist desks.</p>
+                <div class="ct-dept-links">
+                    <a href="mailto:office@toyoaviation.ro" class="ct-dept-link">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        office@toyoaviation.ro
+                    </a>
+                </div>
+            </div>
+
+            <div class="ct-dept-card">
+                <div class="ct-dept-top">
+                    <span class="ct-dept-num">04</span>
+                    <h3 class="ct-dept-name">Financial</h3>
+                </div>
+                <p class="ct-dept-desc">Billing, invoicing, and all financial correspondence handled with complete discretion.</p>
+                <div class="ct-dept-links">
+                    <a href="mailto:financial@toyoaviation.ro" class="ct-dept-link">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        financial@toyoaviation.ro
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ── LOCATION ── -->
+    <section class="ct-location">
+        <div class="ct-location-inner">
+            <div class="ct-location-text">
+                <p class="eyebrow dark" style="margin-bottom:1.4rem;">Our Base</p>
+                <h2 class="ct-location-title">Bucharest,<br><em>Romania.</em></h2>
+                <p class="ct-location-body">Headquartered at Splaiul Unirii 271-273, Bucharest, Romania. Our operations extend across Europe and the Middle East, available 24 hours a day.</p>
+                <div class="ct-location-addr">
+                    <div class="ct-addr-row">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        271-273 Splaiul Unirii,<br>Bucharest, Romania
+                    </div>
+                    <div class="ct-addr-row">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                        RO21977513 · J2007012006406
+                    </div>
+                </div>
+            </div>
+            <div class="ct-location-map">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2849.8!2d26.082!3d44.427!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40b1fe16df5f80db%3A0xcf958f000b0943!2sSplaiul%20Unirii%20271%2C%20Bucure%C8%99ti%2C%20Romania!5e0!3m2!1sen!2sro!4v1714041234567"
+                    width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade" title="Toyo Aviation Headquarters">
+                </iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── FOOTER CTA ── -->
     <section class="footer-cta">
         <div class="footer-cta-content">
-            <p class="eyebrow on-light">ASK FOR A QUOTE</p>
+            <p class="eyebrow on-light">Ask for a Quote</p>
             <h2 class="serif-title">Seamless travel experience.<br><span class="italic">Privacy, and comfort.</span></h2>
         </div>
         <div class="footer-cta-action">
-            <a href="contact.html" class="cta-pill-dark large">Contact Us ↗</a>
-            <p class="sub-cta">RO21977513 - J2007012006406</p>
+            <a href="mailto:sales@toyoaviation.ro" class="cta-pill-dark large">sales@toyoaviation.ro ↗</a>
+            <p class="sub-cta">RO21977513 — J2007012006406</p>
         </div>
     </section>
-    
+
     <footer class="bottom-footer">
         <div class="footer-left">TOYO AVIATION PRIVATE JET CHARTER</div>
         <div class="footer-center">
@@ -114,6 +176,278 @@
         </div>
         <div class="footer-right">271-273 Splaiul Unirii, Bucharest, Romania</div>
     </footer>
+
+    <style>
+        /* ═══ CONTACT PAGE ══════════════════════════════════════ */
+
+        /* ── Hero ── */
+        .ct-hero {
+            position: relative;
+            height: 100vh;
+            min-height: 640px;
+            overflow: hidden;
+            display: grid;
+            grid-template-rows: 1fr auto;
+            align-items: end;
+        }
+
+        .ct-hero-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+        }
+        .ct-hero-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 40%;
+            filter: brightness(0.3) saturate(0.85);
+        }
+        .ct-hero-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to bottom,
+                rgba(15,12,10,0.2) 0%,
+                rgba(15,12,10,0.0) 35%,
+                rgba(15,12,10,0.65) 75%,
+                rgba(15,12,10,0.9) 100%
+            );
+        }
+
+        .ct-hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 0 7vw 5rem;
+        }
+
+        .ct-hero-eyebrow {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.64rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.45);
+            margin-bottom: 2rem;
+        }
+
+        .ct-hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3.2rem, 6.5vw, 6.5rem);
+            font-weight: 500;
+            line-height: 1.02;
+            color: #fff;
+        }
+        .ct-hero-title em {
+            font-style: italic;
+            color: #c9a96e;
+        }
+
+        .ct-hero-info {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 0;
+            padding: 0 7vw 4rem;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            margin-top: 3rem;
+        }
+
+        .ct-hero-stat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            padding: 2rem 0;
+        }
+        .ct-hero-stat-val {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            font-weight: 400;
+            color: #fff;
+            line-height: 1;
+        }
+        .ct-hero-stat-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.62rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.42);
+        }
+        .ct-hero-divider {
+            width: 1px;
+            height: 48px;
+            background: rgba(255,255,255,0.1);
+            margin: 0 3rem;
+        }
+
+        /* ── Departments ── */
+        .ct-depts {
+            padding: 9rem 7vw 8rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .ct-depts-header {
+            max-width: 1300px;
+            margin: 0 auto 5rem;
+        }
+        .ct-depts-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.4rem, 4vw, 4rem);
+            font-weight: 500;
+            line-height: 1.08;
+            color: #1a1714;
+        }
+        .ct-depts-title em {
+            font-style: italic;
+            color: #9a8565;
+        }
+        .ct-depts-grid {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .ct-dept-card {
+            padding: 3rem 2.5rem 3rem 0;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 1.4rem;
+            transition: background 0.3s;
+        }
+        .ct-dept-card + .ct-dept-card { padding-left: 2.5rem; }
+        .ct-dept-card:last-child { border-right: none; padding-right: 0; }
+        .ct-dept-card:hover { background: rgba(0,0,0,0.015); }
+
+        .ct-dept-top {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .ct-dept-num {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.58rem;
+            letter-spacing: 0.15em;
+            color: var(--text-secondary);
+        }
+        .ct-dept-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: #1a1714;
+            line-height: 1.2;
+        }
+        .ct-dept-desc {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 300;
+            color: var(--text-secondary);
+            line-height: 1.75;
+            flex: 1;
+        }
+        .ct-dept-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+        }
+        .ct-dept-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            color: #1a1714;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            padding-bottom: 0.1rem;
+            transition: color 0.2s, border-color 0.2s;
+        }
+        .ct-dept-link svg { color: #9a8565; flex-shrink: 0; }
+        .ct-dept-link:hover {
+            color: #9a8565;
+            border-color: #9a8565;
+        }
+
+        /* ── Location ── */
+        .ct-location {
+            background: var(--brown-bg);
+            color: var(--brown-text);
+        }
+        .ct-location-inner {
+            display: grid;
+            grid-template-columns: 1fr 1.6fr;
+            min-height: 580px;
+        }
+        .ct-location-text {
+            padding: 8rem 5vw 8rem 7vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .ct-location-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.8rem, 4.5vw, 5rem);
+            font-weight: 500;
+            line-height: 1.05;
+            color: #fff;
+            margin-bottom: 2rem;
+        }
+        .ct-location-title em {
+            font-style: italic;
+            color: #c9a96e;
+        }
+        .ct-location-body {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 300;
+            color: var(--brown-muted);
+            line-height: 1.85;
+            max-width: 40ch;
+            margin-bottom: 3rem;
+        }
+        .ct-location-addr {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .ct-addr-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 400;
+            color: rgba(232,227,220,0.6);
+            line-height: 1.6;
+        }
+        .ct-addr-row svg { color: #c9a96e; flex-shrink: 0; margin-top: 2px; }
+
+        .ct-location-map {
+            height: 100%;
+            min-height: 480px;
+            overflow: hidden;
+            filter: grayscale(1) contrast(0.85) brightness(0.7);
+        }
+        .ct-location-map iframe {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        @media (max-width: 900px) {
+            .ct-hero-info { flex-wrap: wrap; }
+            .ct-hero-divider { display: none; }
+            .ct-depts-grid { grid-template-columns: 1fr 1fr; gap: 0; }
+            .ct-dept-card { border-bottom: 1px solid var(--border-color); }
+            .ct-location-inner { grid-template-columns: 1fr; }
+            .ct-location-map { min-height: 380px; }
+        }
+    </style>
 
 </body>
 </html>

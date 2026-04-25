@@ -476,8 +476,13 @@
         </div>
 
         <div class="sv-world-wrap">
-            <div class="sv-world-frame">
-                <svg class="sv-world-map" id="sv-world-map" viewBox="370 60 190 95" role="img" aria-labelledby="sv-map-svg-title sv-map-svg-desc">
+            <div class="sv-world-frame" style="position:relative;">
+                <!-- Base detailed map rendered as <img> so SVG loads correctly -->
+                <img src="emea-map.svg" alt="" aria-hidden="true" style="display:block;width:100%;height:auto;position:relative;z-index:0;">
+                <!-- Transparent SVG overlay for animated routes + labels -->
+                <svg class="sv-world-map" id="sv-world-map" viewBox="370 60 190 95"
+                     role="img" aria-labelledby="sv-map-svg-title sv-map-svg-desc"
+                     style="position:absolute;inset:0;width:100%;height:100%;z-index:1;">
                     <title id="sv-map-svg-title">Stylized world route map</title>
                     <desc id="sv-map-svg-desc">A stylized world map showing highlighted route connections from Bucharest to major destinations.</desc>
                     <defs>
@@ -488,7 +493,6 @@
                             <stop offset="100%" stop-color="#c9a96e" stop-opacity="0.08"/>
                         </linearGradient>
                     </defs>
-                    <image href="high-detail-emea.svg" x="0" y="0" width="800" height="400" preserveAspectRatio="xMidYMid meet"/>
 
                     <g id="sv-world-routes"></g>
                     <g id="sv-world-labels"></g>
