@@ -444,7 +444,18 @@
             <li><a href="contact.html">Contact</a></li>
         </ul>
         <a href="contact.html" class="cta-pill-small">Contact Us ↗</a>
+        <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
     </nav>
+
+    <!-- Mobile drawer -->
+    <div class="nav-drawer" id="nav-drawer" aria-hidden="true">
+        <a href="index.html">Home</a>
+        <a href="services.html">Services</a>
+        <a href="aircrafts.html">Aircrafts</a>
+        <a href="careers.html">Careers</a>
+        <a href="contact.html">Contact</a>
+        <a href="contact.html" class="drawer-cta">Contact Us ↗</a>
+    </div>
     <script>document.getElementById('main-nav').classList.add('nav-visible');</script>
 
     <!-- ══ HERO with scroll-out plane ══ -->
@@ -475,23 +486,23 @@
 
         <div class="sv-world-wrap">
             <!--
-                Map crop maths (SVG is 800×400, viewBox we want: x=370 y=60 w=190 h=95)
-                Scale factor  = 800/190 = 4.2105
-                Left offset   = -(370/800) * scaleW  →  we embed via CSS on the wrapper
+                Map crop maths (SVG is 800×400, viewBox: x=320 y=55 w=260 h=155 → ratio 260:155)
+                Scale  = 800/260 ≈ 3.077
+                Left   = -(320/260 × 100%) ≈ -123.1%
+                Top    = -(55/155 × 100%)  ≈ -35.5%
             -->
             <div class="sv-world-frame" style="position:relative;overflow:hidden;">
-                <!-- Base map: scaled+cropped via position so it matches the overlay SVG viewBox exactly -->
                 <img src="emea-map.svg" alt="" aria-hidden="true"
                      style="position:absolute;
-                            width: calc(800 / 190 * 100%);
+                            width: calc(800 / 260 * 100%);
                             height: auto;
-                            left: calc(-370 / 190 * 100%);
-                            top: calc(-60 / 95 * 100%);
+                            left: calc(-320 / 260 * 100%);
+                            top: calc(-55 / 155 * 100%);
                             z-index:0;">
-                <!-- Invisible spacer that gives the frame its height (viewBox aspect 190:95 = 2:1) -->
-                <div style="padding-top:50%;pointer-events:none;" aria-hidden="true"></div>
-                <!-- Transparent SVG overlay for animated routes + labels — same viewBox as the crop -->
-                <svg class="sv-world-map" id="sv-world-map" viewBox="370 60 190 95"
+                <!-- Spacer: aspect ratio 260:155 ≈ 59.6% -->
+                <div style="padding-top:59.6%;pointer-events:none;" aria-hidden="true"></div>
+                <!-- Overlay SVG — same crop coordinates -->
+                <svg class="sv-world-map" id="sv-world-map" viewBox="320 55 260 155"
                      role="img" aria-labelledby="sv-map-svg-title sv-map-svg-desc"
                      style="position:absolute;inset:0;width:100%;height:100%;z-index:1;">
                     <title id="sv-map-svg-title">Stylized world route map</title>
@@ -792,5 +803,18 @@
         })();
     </script>
 
+
+    <!-- Hamburger / drawer toggle -->
+    <script>
+    (function() {
+        var btn = document.getElementById('nav-hamburger');
+        var drawer = document.getElementById('nav-drawer');
+        if (!btn || !drawer) return;
+        function open() { btn.classList.add('open'); btn.setAttribute('aria-expanded','true'); drawer.classList.add('open'); drawer.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
+        function close() { btn.classList.remove('open'); btn.setAttribute('aria-expanded','false'); drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
+        btn.addEventListener('click', function(){ btn.classList.contains('open') ? close() : open(); });
+        drawer.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', close); });
+    })();
+    </script>
 </body>
 </html>
