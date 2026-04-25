@@ -173,8 +173,6 @@
         }
         .sv-world-map {
             display: block;
-            width: 100%;
-            height: auto;
             filter: sepia(0.08) saturate(0.85) contrast(1.1) brightness(1.02);
         }
         .sv-world-route {
@@ -476,10 +474,23 @@
         </div>
 
         <div class="sv-world-wrap">
-            <div class="sv-world-frame" style="position:relative;">
-                <!-- Base detailed map rendered as <img> so SVG loads correctly -->
-                <img src="emea-map.svg" alt="" aria-hidden="true" style="display:block;width:100%;height:auto;position:relative;z-index:0;">
-                <!-- Transparent SVG overlay for animated routes + labels -->
+            <!--
+                Map crop maths (SVG is 800×400, viewBox we want: x=370 y=60 w=190 h=95)
+                Scale factor  = 800/190 = 4.2105
+                Left offset   = -(370/800) * scaleW  →  we embed via CSS on the wrapper
+            -->
+            <div class="sv-world-frame" style="position:relative;overflow:hidden;">
+                <!-- Base map: scaled+cropped via position so it matches the overlay SVG viewBox exactly -->
+                <img src="emea-map.svg" alt="" aria-hidden="true"
+                     style="position:absolute;
+                            width: calc(800 / 190 * 100%);
+                            height: auto;
+                            left: calc(-370 / 190 * 100%);
+                            top: calc(-60 / 95 * 100%);
+                            z-index:0;">
+                <!-- Invisible spacer that gives the frame its height (viewBox aspect 190:95 = 2:1) -->
+                <div style="padding-top:50%;pointer-events:none;" aria-hidden="true"></div>
+                <!-- Transparent SVG overlay for animated routes + labels — same viewBox as the crop -->
                 <svg class="sv-world-map" id="sv-world-map" viewBox="370 60 190 95"
                      role="img" aria-labelledby="sv-map-svg-title sv-map-svg-desc"
                      style="position:absolute;inset:0;width:100%;height:100%;z-index:1;">
