@@ -28,7 +28,7 @@
     <!-- ── HERO ── -->
     <section class="cr-hero">
         <div class="cr-hero-bg">
-            <img src="IMG_5846-1024x768.jpg" alt="Toyo Aviation fleet">
+            <img src="Latitude-33-Aviation-Midsize-Jet-Category.jpg" alt="Toyo Aviation fleet">
         </div>
         <div class="cr-hero-content">
             <p class="cr-hero-eyebrow">Toyo Aviation · Careers</p>
@@ -44,12 +44,13 @@
     <!-- ── INTRO STATEMENT ── -->
     <section class="cr-statement">
         <div class="cr-statement-inner">
-            <p class="cr-statement-num">01</p>
-            <div class="cr-statement-text">
+            <div class="cr-statement-left">
                 <p class="eyebrow on-light" style="margin-bottom:1.8rem;">Our Philosophy</p>
                 <h2 class="cr-statement-heading">Excellence is not<br>a destination — it is<br><span class="cr-gold-italic">how we operate.</span></h2>
             </div>
-            <p class="cr-statement-body">At Toyo Aviation, we have operated since 2007 with a single standard: uncompromising. From the flight deck to client relations, every role within our organization carries the weight of that commitment. We are not looking for employees — we are looking for advocates of excellence.</p>
+            <div class="cr-statement-right">
+                <p class="cr-statement-body">At Toyo Aviation, we have operated since 2007 with a single standard: uncompromising. From the flight deck to client relations, every role within our organization carries the weight of that commitment. We are not looking for employees — we are looking for advocates of excellence.</p>
+            </div>
         </div>
     </section>
 
@@ -57,10 +58,6 @@
     <section class="cr-joining">
         <div class="cr-joining-visual">
             <img src="IMG_5846-1024x768.jpg" alt="Private jet interior with flight attendant">
-            <div class="cr-joining-badge">
-                <span class="cr-badge-num">2007</span>
-                <span class="cr-badge-label">Founded</span>
-            </div>
         </div>
         <div class="cr-joining-content">
             <p class="eyebrow on-light" style="margin-bottom:1.8rem;">Joining Our Ranks</p>
@@ -248,17 +245,12 @@
             max-width: 1300px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 60px 1fr 1fr;
-            gap: 3rem 5rem;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem 7rem;
             align-items: start;
         }
-        .cr-statement-num {
-            font-family: 'Inter', sans-serif;
-            font-size: 0.65rem;
-            letter-spacing: 0.14em;
-            color: var(--text-secondary);
-            padding-top: 0.6rem;
-        }
+        .cr-statement-left, .cr-statement-right { display: flex; flex-direction: column; justify-content: flex-start; }
+        /* statement-num removed — now 2-col layout */
         .cr-statement-heading {
             font-family: 'Playfair Display', serif;
             font-size: clamp(2.2rem, 3.5vw, 3.6rem);
@@ -276,7 +268,7 @@
             font-weight: 300;
             color: var(--text-secondary);
             line-height: 1.85;
-            padding-top: 1rem;
+            padding-top: 0;
         }
 
         /* ── Joining Section ── */
@@ -453,7 +445,7 @@
         }
 
         @media (max-width: 900px) {
-            .cr-statement-inner { grid-template-columns: 1fr; gap: 1.5rem; }
+            .cr-statement-inner { grid-template-columns: 1fr; gap: 2rem; }
             .cr-joining { grid-template-columns: 1fr; }
             .cr-joining-visual { min-height: 360px; }
             .cr-values-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
